@@ -40,13 +40,13 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
     frameDelta = cv2.absdiff(gray, cv2.convertScaleAbs(avg))
     cv2.accumulateWeighted(gray, avg, 0.5)
 
-    thresh = cv2.threshold(frameDelta, 5, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.threshold(frameDelta, 50, 255, cv2.THRESH_BINARY)[1]
     thresh = cv2.dilate(thresh, None, iterations=2)
     cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     changed = False
     for c in cnts:
-        if cv2.contourArea(c) < 5000:
+        if cv2.contourArea(c) < 500:
             continue
 
         (x,y,w,h) = cv2.boundingRect(c)
@@ -54,7 +54,8 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
         changed = True
 
     if changed: 
-        cv2.imwrite("data/frame_{}.jpg".format(frameCount), frame);
+        timestamp = datetime.now()
+        cv2.imwrite("data/frame_{}_{}.jpg".format(frameCount, timestamp.strftime("%Y%m%d_%H%M%S.%f")), frame)
        
     frameCount += 1
     rawCapture.truncate(0)
