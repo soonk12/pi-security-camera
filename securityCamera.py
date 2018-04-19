@@ -5,7 +5,7 @@ from picamera.array import PiRGBArray
 import cv2
 
 camera = PiCamera()
-camera.resolution = (640, 480)
+#camera.resolution = (640, 480)
 camera.rotation = 180
 camera.start_preview()
 # warm-up
@@ -19,7 +19,8 @@ sleep(2)
 #    filename = d.strftime("data/pic_%Y%m%d_%H%M%S.%f.jpg")
 #    camera.capture(filename)
 
-rawCapture = PiRGBArray(camera, size=(640, 480))
+#rawCapture = PiRGBArray(camera, size=(640, 480))
+rawCapture = PiRGBArray(camera)
 frameCount = 0
 avg = None
 
@@ -55,7 +56,7 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
 
     if changed: 
         timestamp = datetime.now()
-        cv2.imwrite("data/frame_{}_{}.jpg".format(frameCount, timestamp.strftime("%Y%m%d_%H%M%S.%f")), frame)
+        cv2.imwrite("data/frame_{}_{}.jpg".format(timestamp.strftime("%Y%m%d_%H%M%S.%f"), frameCount), frame)
        
     frameCount += 1
     rawCapture.truncate(0)
