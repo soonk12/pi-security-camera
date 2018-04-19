@@ -50,8 +50,9 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
         if cv2.contourArea(c) < 500:
             continue
 
-        (x,y,w,h) = cv2.boundingRect(c)
-        cv2.rectangle(frame, (x,y), (x+w, y+h), (0,255,0),2)
+        #(x,y,w,h) = cv2.boundingRect(c)
+        #cv2.rectangle(frame, (x,y), (x+w, y+h), (0,255,0),2)
+        cv2.drawContours(frame, [c], 0, (0, 255, 0), 2)
         changed = True
 
     if changed: 
