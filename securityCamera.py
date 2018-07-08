@@ -6,7 +6,7 @@ import cv2
 
 camera = PiCamera()
 #camera.resolution = (640, 480)
-camera.rotation = 180
+#camera.rotation = 180
 camera.start_preview()
 # warm-up
 sleep(2)
@@ -23,6 +23,8 @@ sleep(2)
 rawCapture = PiRGBArray(camera)
 frameCount = 0
 avg = None
+
+print "Pi Security Camera Starting"
 
 # capture frames from camera
 for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
@@ -57,7 +59,9 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
 
     if changed: 
         timestamp = datetime.now()
-        cv2.imwrite("data/frame_{}_{}.jpg".format(timestamp.strftime("%Y%m%d_%H%M%S.%f"), frameCount), frame)
+        filename = "frame_{}_{}.jpg".format(timestamp.strftime("%Y%m%d_%H%M%S.%f"), frameCount)
+        print "Saving " + filename
+        cv2.imwrite("/home/pi/pisec/data/frame_{}_{}.jpg".format(timestamp.strftime("%Y%m%d_%H%M%S.%f"), frameCount), frame)
        
     frameCount += 1
     rawCapture.truncate(0)
