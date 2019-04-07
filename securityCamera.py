@@ -5,6 +5,8 @@ from picamera.array import PiRGBArray
 import cv2
 import os
 import boto3
+import pisecConfig as cfg
+
 
 camera = PiCamera()
 #camera.resolution = (640, 480)
@@ -26,7 +28,7 @@ rawCapture = PiRGBArray(camera)
 frameCount = 0
 avg = None
 
-s3 = boto3.client("s3", "us-east-2")
+s3 = boto3.client('s3', region_name=cfg.region, aws_access_key_id=cfg.aws_access_key_id, aws_secret_access_key=cfg.aws_secret_access_key)
 
 
 print "Pi Security Camera Starting"
@@ -73,7 +75,7 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
         fullName = path + "/" + filename
         cv2.imwrite(fullName, frame)
         
-        s3.upload_file(fullName, "net.soonk.camera0", filename)
+        s3.upload_file(fullName, cfg.bucket_name, filename)
 
     frameCount += 1
     rawCapture.truncate(0)
