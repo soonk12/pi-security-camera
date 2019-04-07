@@ -4,6 +4,7 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 import cv2
 import os
+import boto3
 
 camera = PiCamera()
 #camera.resolution = (640, 480)
@@ -24,6 +25,9 @@ sleep(2)
 rawCapture = PiRGBArray(camera)
 frameCount = 0
 avg = None
+
+s3 = boto3.client("s3", "us-east-2")
+
 
 print "Pi Security Camera Starting"
 
@@ -66,8 +70,11 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
         if not os.path.exists(path):
             os.makedirs(path)
         print "Saving " + filename
-        cv2.imwrite("/home/pi/pisec/data/{}/frame_{}_{}.jpg".format(date, timestamp.strftime("%Y%m%d_%H%M%S.%f"), frameCount), frame)
-       
+        fullName = path + "/" + filename
+        cv2.imwrite(fullName, frame)
+        
+        s3.upload_file(fullName, "net.soonk.camera0", filename)
+
     frameCount += 1
     rawCapture.truncate(0)
     
